@@ -1,0 +1,22 @@
+{
+  "name": "mongoed",
+  "main": "server.js",
+  "version": "1.0.0",
+  "description": "mongo poc",
+  "scripts": {
+    "test": "server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lukehoggett/mongoed.git"
+  },
+  "author": "Luke Hoggett",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.12.2",
+    "express": "^4.12.3",
+    "mongoose": "^3.8.25",
+    "morgan": "^1.5.2"
+  }
+}
