@@ -34,3 +34,12 @@
 2015-03-20T17:21:17.102+1100 [clientcursormon] mem (MB) res:27 virt:348
 2015-03-20T17:21:17.102+1100 [clientcursormon]  mapped (incl journal view):160
 2015-03-20T17:21:17.102+1100 [clientcursormon]  connections:0
+2015-03-20T17:26:17.124+1100 [clientcursormon] mem (MB) res:27 virt:348
+2015-03-20T17:26:17.135+1100 [clientcursormon]  mapped (incl journal view):160
+2015-03-20T17:26:17.135+1100 [clientcursormon]  connections:0
+2015-03-20T17:31:17.160+1100 [clientcursormon] mem (MB) res:27 virt:348
+2015-03-20T17:31:17.160+1100 [clientcursormon]  mapped (incl journal view):160
+2015-03-20T17:31:17.160+1100 [clientcursormon]  connections:0
+2015-03-20T17:36:17.180+1100 [clientcursormon] mem (MB) res:27 virt:348
+2015-03-20T17:36:17.180+1100 [clientcursormon]  mapped (incl journal view):160
+2015-03-20T17:36:17.180+1100 [clientcursormon]  connections:0

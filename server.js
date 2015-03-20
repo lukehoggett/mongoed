@@ -1,42 +1,84 @@
-// load the express package and create our app
-var express = require('express'),
-    app = express();
-var path = require('path');
-// send our index.html file to the user for the home page
+// BASE SETUP
+// ======================================
+// CALL THE PACKAGES --------------------
+var express = require('express'); // call express
+var app = express(); // define our app using express
+var bodyParser = require('body-parser'); // get body-parser
+var morgan = require('morgan'); // used to see requests
+var mongoose = require('mongoose'); // for working w/ our database
+var port = process.env.PORT || 8080; // set the port for our app
+// APP CONFIGURATION ---------------------
+// use body parser so we can grab information from POST requests
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+// configure our app to handle CORS requests
+app.use(function(req, res, next) {
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
+	next();
+});
+// log all requests to the console
+app.use(morgan('dev'));
+
+// connect to our database (hosted on modulus.io)
+mongoose.connect('mongodb://node:noder@novus.modulusmongo.net:27017/Iganiq8o');
+
+var User = require('./app/models/user');
+
+// ROUTES FOR OUR API
+// =============================
+// basic route for the home page
 app.get('/', function(req, res) {
-res.sendFile(path.join(__dirname + '/index.html'));
+	res.send('Welcome to the home page!');
+});
+// get an instance of the express router
+var apiRouter = express.Router();
+
+// middleware to use for all requests
+apiRouter.use(function(req, res, next) {
+	// do logging
+	console.log('Somebody just came to our app!');
+	// we'll add more to the middleware in Chapter 10
+	// this is where we will authenticate users
+	next(); // make sure we go to the next routes and don't stop here
 });
 
-// create routes for the admin section
-// get an instance of the router
-var adminRouter = express.Router();
-// route middleware that will happen on every request
-adminRouter.use(function(req, res, next) {
-// log each request to the console
-console.log(req.method, req.url);
-// continue doing what we were doing and go to the route
-next();
-});
-// admin main page. the dashboard (http://localhost:1337/admin)
-adminRouter.get('/', function(req, res) {
-res.send('I am the dashboard!');
-});
-// users page (http://localhost:1337/admin/users)
-adminRouter.get('/users', function(req, res) {
-res.send('I show all the users!');
-});
-// posts page (http://localhost:1337/admin/posts)
-adminRouter.get('/posts', function(req, res) {
-res.send('I show all the posts!');
-});
-// apply the routes to our application
-app.use('/admin', adminRouter);
+// on routes that end in /users
+// ----------------------------------------------------
+apiRouter.route('/users')
+	// create a user (accessed at POST http://localhost:8080/api/users)
+	.post(function(req, res) {
+		// create a new instance of the User model
+		var user = new User();
+		// set the users information (comes from the request)
+		user.name = req.body.name;
+		user.username = req.body.username;
+		user.password = req.body.password;
+		// save the user and check for errors
+		user.save(function(err) {
+		if (err) {
+			// duplicate entry
+			if (err.code == 11000)
+			return res.json({ success: false, message: 'A user with that\
+			username already exists. '});
+			else
+			return res.send(err);
+		}
+		res.json({ message: 'User created!' });
+	});
+})
 
-// start the server
-app.listen(1337);
-console.log('1337 is the magic port!');
-
-
-// grab the packages we need
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/db_name');
+// test route to make sure everything is working
+// accessed at GET http://localhost:8080/api
+apiRouter.get('/', function(req, res) {
+	res.json({ message: 'hooray! welcome to our api!' });
+});
+// more routes for our API will happen here
+// REGISTER OUR ROUTES -------------------------------
+// all of our routes will be prefixed with /api
+app.use('/api', apiRouter);
+// START THE SERVER
+// ===============================
+app.listen(port);
+console.log('Magic happens on port ' + port);
